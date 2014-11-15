@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import getopt
 import os
 import re
 import subprocess
@@ -8,6 +9,8 @@ import sys
 prefix = ''
 error = []
 output = ''
+tmp_file = None
+auto_delete = False
 valid_archives = ['.tar.gz', '.tar', '.tgz', '.zip', '.7z']
 mode = 'python'
 #mode = 'c'
@@ -60,7 +63,17 @@ def gather_files(parent_path):
     return valid_files
 
 def main():
-    tmp_file = input('Assignment name? ')
+    options, args = getopt.getopt(sys.argv[1:], 'a:d', ['assignment', 'delete'])
+    print(options)
+    for option, value in options:
+        if option in ['-a', '--assignment']:
+            tmp_file = value
+        elif option in ['-d', '--delete']:
+            auto_delete = True
+        print(option, value)
+
+    if not tmp_file:
+        tmp_file = input('Assignment name? ')
 
     for f in os.listdir('.'):
         if f.endswith('.zip'):
@@ -96,7 +109,9 @@ def main():
     os.system(command)
 
 
-    input('Press enter to delete created files.')
+    if not auto_delete:
+        input('Press enter to delete created files.')
+
     print('Deleting extra files.')
     os.system('rm -rf "{}"'.format(tmp_file))
 
