@@ -65,6 +65,8 @@ def gather_files(parent_path):
 def main():
     options, args = getopt.getopt(sys.argv[1:], 'a:d', ['assignment', 'delete'])
     print(options)
+    tmp_file = None
+    auto_delete = False
     for option, value in options:
         if option in ['-a', '--assignment']:
             tmp_file = value
@@ -92,7 +94,10 @@ def main():
 
             if not extract(f, tmp_file + '/' + dirname):
                 print('File failed to extract: {}.'.format(f))
-                sys.exit()
+                #sys.exit()
+
+    c = "find ./" + tmp_file + " -depth -name \"* *\" -execdir perl-rename 's/ /_/g' \"{}\" \;"
+    os.system(c);
 
     base_files = gather_files('base')
     student_files = gather_files(tmp_file)
