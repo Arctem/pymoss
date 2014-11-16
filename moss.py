@@ -108,7 +108,7 @@ def main():
     student = '"' + '" "'.join(student_files) + '"'
 
     #print output
-    command = './moss -l c -d {base} {student}'.format(base = base, student = student)
+    command = './moss -l {lang} -d {base} {student}'.format(base = base, student = student, lang = mode)
     print('Uploading {} files.'.format(len(base_files) + len(student_files)))
     #print command
     os.system(command)
