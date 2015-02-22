@@ -15,7 +15,11 @@ python moss.py [-a assignment_name] [-d] [-l c|python] [-m]
 ```
 
 Options:
- * -a Assignment name. Will be used in directory naming when uploading to MOSS.
- * -d Whether to delete the directories created in unzipping the files.
- * -l Language -- either 'c' or 'python'
- * -m Whether this is a Moodle course or not (default: no, Canvas)
+ * `-a` Assignment name. Will be used in directory naming when uploading to MOSS.
+ * `-d` Whether to delete the directories created in unzipping the files.
+ * `-l` Language -- either 'c' or 'python'
+ * `-m` Whether this is a Moodle course or not (default: no, Canvas)
+
+Will find all files ending in .zip in same directory as script and assume that
+they are the zipped download of all submissions for an assignment from Canvas or
+Moodle.
