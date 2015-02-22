@@ -14,6 +14,7 @@ auto_delete = False
 valid_archives = ['.tar.gz', '.tar', '.tgz', '.zip', '.7z']
 mode = 'python'
 #mode = 'c'
+moodle = False
 valid_endings = {
     'python' : ['.py'],
     'c' : ['.h', '.c']
@@ -63,7 +64,7 @@ def gather_files(parent_path):
     return valid_files
 
 def main():
-    options, args = getopt.getopt(sys.argv[1:], 'a:d', ['assignment', 'delete'])
+    options, args = getopt.getopt(sys.argv[1:], 'a:dl:m', ['assignment', 'delete', 'language', 'moodle'])
     print(options)
     tmp_file = None
     auto_delete = False
@@ -72,6 +73,10 @@ def main():
             tmp_file = value
         elif option in ['-d', '--delete']:
             auto_delete = True
+        elif option in ['-l', '--language']:
+            mode = value
+        elif option in ['-m', '--moodle']:
+            moodle = True
         print(option, value)
 
     if not tmp_file:
@@ -84,13 +89,20 @@ def main():
 
     for f in os.listdir(tmp_file):
         if valid_archive_name(f):
-            #print(f)
-            last_name, first_name = f.split('_')[0].split('--', 1)
-            first_name = first_name.split('-')[0] #remove possible '-late'
-            dirname = prefix + last_name + '_' + first_name
-            os.system('mkdir "{}/{}"'.format(tmp_file, dirname))
+            if moodle:
+                l = f.split('_')[0].split(' ')
+                last_name, first_name = l[-1], l[0]
+                dirname = prefix + last_name + '_' + first_name
+                os.system('mkdir "{}/{}"'.format(tmp_file, dirname))
 
-            f = tmp_file + '/' + f
+                f = tmp_file + '/' + f
+            else:
+                last_name, first_name = f.split('_')[0].split('--', 1)
+                first_name = first_name.split('-')[0] #remove possible '-late'
+                dirname = prefix + last_name + '_' + first_name
+                os.system('mkdir "{}/{}"'.format(tmp_file, dirname))
+
+                f = tmp_file + '/' + f
 
             if not extract(f, tmp_file + '/' + dirname):
                 print('File failed to extract: {}.'.format(f))
@@ -104,7 +116,7 @@ def main():
 
     base = ''
     if len(base_files) > 0:
-    	base = '-b ' + ' -b '.join(base_files)
+        base = '-b ' + ' -b '.join(base_files)
     student = '"' + '" "'.join(student_files) + '"'
 
     #print output
@@ -112,7 +124,6 @@ def main():
     print('Uploading {} files.'.format(len(base_files) + len(student_files)))
     #print command
     os.system(command)
-
 
     if not auto_delete:
         input('Press enter to delete created files.')
