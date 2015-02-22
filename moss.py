@@ -74,7 +74,7 @@ def main():
         elif option in ['-d', '--delete']:
             auto_delete = True
         elif option in ['-l', '--language']:
-            mode = value
+            mode = value.lower()
         elif option in ['-m', '--moodle']:
             moodle = True
         print(option, value)
