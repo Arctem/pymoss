@@ -9,16 +9,11 @@ import sys
 prefix = ''
 error = []
 output = ''
-tmp_file = None
-auto_delete = False
 valid_archives = ['.tar.gz', '.tar', '.tgz', '.zip', '.7z']
-mode = 'python'
-#mode = 'c'
-moodle = False
 valid_endings = {
     'python' : ['.py'],
     'c' : ['.h', '.c']
-}[mode]
+}
 
 #From http://stackoverflow.com/questions/898669/how-can-i-detect-if-a-file-is-binary-non-text-in-python
 def istext(path):
@@ -32,8 +27,8 @@ def valid_archive_name(path):
             return True
     return False
 
-def valid_code_name(path):
-    for e in valid_endings:
+def valid_code_name(path, mode):
+    for e in valid_endings[mode]:
         if path.endswith(e):
             return True
     return False
@@ -50,13 +45,13 @@ def extract(path, destination):
     return False
 
 
-def gather_files(parent_path):
+def gather_files(parent_path, mode):
     valid_files = []
     for directory, junk, files in os.walk(parent_path):
         for f in files:
             f = directory + '/' + f
             print(f)
-            if valid_code_name(f):
+            if valid_code_name(f, mode):
                 if istext(f):
                     valid_files.append(f)
                 else:
@@ -64,8 +59,10 @@ def gather_files(parent_path):
     return valid_files
 
 def main():
-    options, args = getopt.getopt(sys.argv[1:], 'a:dl:m', ['assignment', 'delete', 'language', 'moodle'])
-    print(options)
+    options, args = getopt.getopt(sys.argv[1:], 'a:dl:m', ['assignment',
+        'delete', 'language', 'moodle'])
+    mode = 'python'
+    moodle = False
     tmp_file = None
     auto_delete = False
     for option, value in options:
@@ -111,8 +108,8 @@ def main():
     c = "find ./" + tmp_file + " -depth -name \"* *\" -execdir perl-rename 's/ /_/g' \"{}\" \;"
     os.system(c);
 
-    base_files = gather_files('base')
-    student_files = gather_files(tmp_file)
+    base_files = gather_files('base', mode)
+    student_files = gather_files(tmp_file, mode)
 
     base = ''
     if len(base_files) > 0:
