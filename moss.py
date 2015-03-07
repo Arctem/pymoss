@@ -9,10 +9,11 @@ import sys
 prefix = ''
 error = []
 output = ''
-valid_archives = ['.tar.gz', '.tar', '.tgz', '.zip', '.7z']
+valid_archives = ['.tar.gz', '.tar', '.tgz', '.zip', '.7z', '.jar']
 valid_endings = {
     'python' : ['.py'],
-    'c' : ['.h', '.c']
+    'c' : ['.h', '.c'],
+    'java' : ['.java']
 }
 
 #From http://stackoverflow.com/questions/898669/how-can-i-detect-if-a-file-is-binary-non-text-in-python
@@ -38,7 +39,7 @@ def extract(path, destination):
         return not os.system('tar -xf "{}" -C "{}"'.format(path, destination))
     elif path.endswith('.tar.gz') or path.endswith('.tgz'):
         return not os.system('tar -zxf "{}" -C "{}"'.format(path, destination))
-    elif path.endswith('.zip'):
+    elif path.endswith('.zip') or path.endswith('.jar'):
         return not os.system('unzip "{}" -d "{}"'.format(path, destination))
     elif path.endswith('.7z'):
         return not os.system('7za x "{}" "-o{}"'.format(path, destination))
